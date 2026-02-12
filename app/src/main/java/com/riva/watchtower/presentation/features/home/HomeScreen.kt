@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.features.home
+package com.riva.watchtower.presentation.features.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.riva.watchtower.domain.enums.SiteStatus
-import com.riva.watchtower.ui.components.SiteListHeader
-import com.riva.watchtower.ui.components.StatsCard
+import com.riva.watchtower.presentation.components.SiteListHeader
+import com.riva.watchtower.presentation.components.StatsCard
 
 
 @OptIn(ExperimentalMaterial3Api::class)

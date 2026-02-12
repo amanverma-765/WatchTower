@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.navigation
+package com.riva.watchtower.presentation.navigation
 
 import kotlinx.serialization.Serializable
 

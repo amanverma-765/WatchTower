@@ -4,16 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.riva.watchtower.ui.navigation.AppDestinations
-import com.riva.watchtower.ui.navigation.AppNavHost
-import com.riva.watchtower.ui.theme.WatchTowerTheme
+import com.riva.watchtower.presentation.navigation.AppDestinations
+import com.riva.watchtower.presentation.navigation.AppNavHost
+import com.riva.watchtower.presentation.theme.WatchTowerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

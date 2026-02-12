@@ -1,8 +1,8 @@
 package com.riva.watchtower.domain.enums
 
 enum class SiteStatus(val text: String) {
-    CHANGED("Changed"),
-    ERROR("Failed"),
+    RESOLVED("Resolved"),
     PASSED("No Change"),
-    RESOLVED("Resolved")
+    CHANGED("Changed"),
+    ERROR("Failed")
 }

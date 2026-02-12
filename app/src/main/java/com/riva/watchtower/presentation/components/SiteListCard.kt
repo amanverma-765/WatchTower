@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.components
+package com.riva.watchtower.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -38,12 +38,12 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.riva.watchtower.domain.enums.SiteStatus
 import com.riva.watchtower.domain.models.Site
-import com.riva.watchtower.ui.theme.BlueBackground
-import com.riva.watchtower.ui.theme.BlueValue
-import com.riva.watchtower.ui.theme.GreenBackground
-import com.riva.watchtower.ui.theme.GreenValue
-import com.riva.watchtower.ui.theme.OrangeBackground
-import com.riva.watchtower.ui.theme.OrangeValue
+import com.riva.watchtower.presentation.theme.BlueBackground
+import com.riva.watchtower.presentation.theme.BlueValue
+import com.riva.watchtower.presentation.theme.GreenBackground
+import com.riva.watchtower.presentation.theme.GreenValue
+import com.riva.watchtower.presentation.theme.OrangeBackground
+import com.riva.watchtower.presentation.theme.OrangeValue
 
 @Composable
 fun SiteListCard(

@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.navigation
+package com.riva.watchtower.presentation.navigation
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.riva.watchtower.ui.features.home.HomeScreen
-import com.riva.watchtower.ui.features.siteadd.SiteAddScreen
+import com.riva.watchtower.presentation.features.home.HomeScreen
+import com.riva.watchtower.presentation.features.siteadd.SiteAddScreen
 
 
 @Composable

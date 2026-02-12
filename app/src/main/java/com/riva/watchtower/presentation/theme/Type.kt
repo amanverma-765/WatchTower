@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.theme
+package com.riva.watchtower.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

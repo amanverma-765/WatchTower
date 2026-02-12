@@ -1,4 +1,4 @@
-package com.riva.watchtower.ui.components
+package com.riva.watchtower.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -15,19 +15,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.riva.watchtower.ui.theme.BlueBackground
-import com.riva.watchtower.ui.theme.BlueBorder
-import com.riva.watchtower.ui.theme.BlueLabel
-import com.riva.watchtower.ui.theme.BlueValue
-import com.riva.watchtower.ui.theme.GreenBackground
-import com.riva.watchtower.ui.theme.GreenBorder
-import com.riva.watchtower.ui.theme.GreenLabel
-import com.riva.watchtower.ui.theme.GreenValue
-import com.riva.watchtower.ui.theme.OrangeBackground
-import com.riva.watchtower.ui.theme.OrangeBorder
-import com.riva.watchtower.ui.theme.OrangeLabel
-import com.riva.watchtower.ui.theme.OrangeValue
+import com.riva.watchtower.presentation.theme.BlueBackground
+import com.riva.watchtower.presentation.theme.BlueBorder
+import com.riva.watchtower.presentation.theme.BlueLabel
+import com.riva.watchtower.presentation.theme.BlueValue
+import com.riva.watchtower.presentation.theme.GreenBackground
+import com.riva.watchtower.presentation.theme.GreenBorder
+import com.riva.watchtower.presentation.theme.GreenLabel
+import com.riva.watchtower.presentation.theme.GreenValue
+import com.riva.watchtower.presentation.theme.OrangeBackground
+import com.riva.watchtower.presentation.theme.OrangeBorder
+import com.riva.watchtower.presentation.theme.OrangeLabel
+import com.riva.watchtower.presentation.theme.OrangeValue
 
 
 @Composable
@@ -60,9 +61,10 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "20",
+                    "2000",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = BlueValue
+                    color = BlueValue,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -86,13 +88,14 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 Text(
                     "Changes",
                     style = MaterialTheme.typography.labelMedium,
-                    color = OrangeLabel
+                    color = OrangeLabel,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     "20",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = OrangeValue
+                    color = OrangeValue,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -122,7 +125,8 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 Text(
                     "20",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = GreenValue
+                    color = GreenValue,
+                    textAlign = TextAlign.Center
                 )
             }
         }

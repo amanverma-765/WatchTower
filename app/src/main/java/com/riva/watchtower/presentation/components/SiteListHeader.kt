@@ -1,9 +1,11 @@
-package com.riva.watchtower.ui.components
+package com.riva.watchtower.presentation.components
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,11 +35,13 @@ fun SiteListHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
         ) {
             FilterChip(
                 selected = selected == null,
-                onClick = {onClick(null)},
+                onClick = { onClick(null) },
                 label = { Text("All") },
             )
             SiteStatus.entries.forEach { status ->

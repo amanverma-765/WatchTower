@@ -1,6 +1,5 @@
-package com.riva.watchtower.ui.theme
+package com.riva.watchtower.presentation.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
