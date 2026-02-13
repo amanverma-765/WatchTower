@@ -11,10 +11,12 @@ import com.github.difflib.patch.DeltaType
 import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.domain.enums.SiteStatus
 import com.riva.watchtower.presentation.navigation.AppDestinations
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -60,38 +62,40 @@ class DetailViewModel(
         val baselineRaw = repository.getBaselineHtml(siteId).getOrNull() ?: return
         val latestRaw = repository.getLatestHtml(siteId).getOrNull() ?: return
 
-        // Extract only <body> inner HTML — strips <head>, <script>, <style>, meta noise
-        val oldBody = Ksoup.parse(baselineRaw).body().html()
-        val newBody = Ksoup.parse(latestRaw).body().html()
+        val html = withContext(Dispatchers.Default) {
+            // Extract only <body> inner HTML — strips <head>, <script>, <style>, meta noise
+            val oldBody = Ksoup.parse(baselineRaw).body().html()
+            val newBody = Ksoup.parse(latestRaw).body().html()
 
-        val patch = DiffUtils.diff(oldBody.lines(), newBody.lines())
-        if (patch.deltas.isEmpty()) return
+            val patch = DiffUtils.diff(oldBody.lines(), newBody.lines())
+            if (patch.deltas.isEmpty()) return@withContext null
 
-        // Collect only the new/changed body lines
-        val changedLines = StringBuilder()
-        for (delta in patch.deltas) {
-            if (delta.type == DeltaType.INSERT || delta.type == DeltaType.CHANGE) {
-                delta.target.lines.forEach { changedLines.appendLine(it) }
+            // Collect only the new/changed body lines
+            val changedLines = StringBuilder()
+            for (delta in patch.deltas) {
+                if (delta.type == DeltaType.INSERT || delta.type == DeltaType.CHANGE) {
+                    delta.target.lines.forEach { changedLines.appendLine(it) }
+                }
             }
-        }
 
-        // Pull the original <head> styles so the rendered fragments look correct
-        val headStyles = Ksoup.parse(latestRaw).head().select("style, link[rel=stylesheet]").outerHtml()
+            // Pull the original <head> styles so the rendered fragments look correct
+            val headStyles = Ksoup.parse(latestRaw).head().select("style, link[rel=stylesheet]").outerHtml()
 
-        val html = """
-            <!DOCTYPE html>
-            <html><head>
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            $headStyles
-            <style>
-                * { box-sizing: border-box; }
-                body { font-family: -apple-system, sans-serif;
-                       margin: 0; padding: 12px; background: #fafafa; }
-            </style>
-            </head><body>
-            $changedLines
-            </body></html>
-        """.trimIndent()
+            """
+                <!DOCTYPE html>
+                <html><head>
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                $headStyles
+                <style>
+                    * { box-sizing: border-box; }
+                    body { font-family: -apple-system, sans-serif;
+                           margin: 0; padding: 12px; background: #fafafa; }
+                </style>
+                </head><body>
+                $changedLines
+                </body></html>
+            """.trimIndent()
+        } ?: return
 
         _uiState.update { it.copy(changedHtml = html, hasDiff = true) }
     }
