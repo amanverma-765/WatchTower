@@ -5,14 +5,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class AppDestinations {
     @Serializable
-    data object Home: AppDestinations()
+    data object Home : AppDestinations()
 
     @Serializable
-    data object SiteAdd: AppDestinations()
+    data object SiteAdd : AppDestinations()
 
     @Serializable
-    data object Detail: AppDestinations()
+    data class Detail(val siteId: String) : AppDestinations()
 
     @Serializable
-    data object Alerts: AppDestinations()
+    data object Alerts : AppDestinations()
 }

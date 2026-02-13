@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.riva.watchtower.presentation.features.detail.screens.DetailScreenRoot
 import com.riva.watchtower.presentation.features.home.screens.HomeScreenRoot
 
 
@@ -29,9 +30,9 @@ fun AppNavHost(
     ) {
         composable<AppDestinations.Home> {
             HomeScreenRoot(
-               onSiteCLicked = {
-
-               }
+                onSiteCLicked = { siteId ->
+                    controller.navigate(AppDestinations.Detail(siteId))
+                }
             )
         }
 
@@ -40,7 +41,10 @@ fun AppNavHost(
         }
 
         composable<AppDestinations.Detail> {
-
+            DetailScreenRoot(
+                onBackClick = { controller.popBackStack() },
+                onDeleted = { controller.popBackStack() }
+            )
         }
     }
 }
