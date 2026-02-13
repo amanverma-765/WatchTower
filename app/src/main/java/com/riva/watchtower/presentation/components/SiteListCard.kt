@@ -1,5 +1,6 @@
 package com.riva.watchtower.presentation.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ fun SiteListCard(
     Card(
         onClick = { onClick(site.id) },
         shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(.5.dp, MaterialTheme.colorScheme.outline.copy(.5f)),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
