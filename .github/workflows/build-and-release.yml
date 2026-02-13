@@ -37,7 +37,7 @@ jobs:
 
       - name: Build release APK
         env:
-          KEYSTORE_PATH: ${{ secrets.KEYSTORE_BASE64 != '' && 'release.keystore' || '' }}
+          KEYSTORE_PATH: ${{ github.workspace }}/release.keystore
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: watchtower
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
