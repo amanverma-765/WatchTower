@@ -8,5 +8,6 @@ data class Site(
     val url: String,
     val favicon: String,
     val lastUpdated: Boolean,
-    val lastStatus: SiteStatus
+    val lastStatus: SiteStatus,
+    val contentHash: String
 )
