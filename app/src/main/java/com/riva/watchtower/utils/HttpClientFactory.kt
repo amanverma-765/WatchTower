@@ -1,6 +1,7 @@
 package com.riva.watchtower.utils
 
 import co.touchlab.kermit.Logger
+import com.riva.watchtower.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
@@ -15,21 +16,12 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
-data class HttpClientConfig(
-    val baseUrl: String? = null,
-    val headers: Map<String, String> = emptyMap(),
-    val userAgent: String = "Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36",
-    val requestTimeoutMillis: Long = 30_000,
-    val connectTimeoutMillis: Long = 30_000,
-    val socketTimeoutMillis: Long = 30_000,
-    val enableLogging: Boolean = true,
-    val logLevel: LogLevel = LogLevel.ALL
-)
-
 internal object HttpClientFactory {
     private val kermitLogger = Logger.withTag("HttpClient")
+    private const val USER_AGENT =
+        "Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"
 
-    internal fun create(config: HttpClientConfig = HttpClientConfig()): HttpClient {
+    internal fun create(): HttpClient {
         return HttpClient(OkHttp) {
             engine {
                 config {
@@ -53,39 +45,28 @@ internal object HttpClientFactory {
             }
 
             install(HttpTimeout) {
-                requestTimeoutMillis = config.requestTimeoutMillis
-                connectTimeoutMillis = config.connectTimeoutMillis
-                socketTimeoutMillis = config.socketTimeoutMillis
+                requestTimeoutMillis = 30_000
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 30_000
             }
 
             install(HttpCookies) {
                 storage = AcceptAllCookiesStorage()
             }
 
-            if (config.enableLogging) {
+            if (BuildConfig.DEBUG) {
                 install(Logging) {
                     logger = object : io.ktor.client.plugins.logging.Logger {
                         override fun log(message: String) {
                             kermitLogger.d { message }
                         }
                     }
-                    level = config.logLevel
+                    level = LogLevel.ALL
                 }
             }
 
             install(DefaultRequest) {
-                // Set base URL if provided
-                config.baseUrl?.let { baseUrl ->
-                    url(baseUrl)
-                }
-
-                // Set User-Agent header
-                header("User-Agent", config.userAgent)
-
-                // Set additional headers
-                config.headers.forEach { (key, value) ->
-                    header(key, value)
-                }
+                header("User-Agent", USER_AGENT)
             }
         }
     }
