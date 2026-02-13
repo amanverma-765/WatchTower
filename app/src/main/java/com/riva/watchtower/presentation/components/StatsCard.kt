@@ -47,7 +47,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
             ),
             modifier = Modifier
                 .weight(1f)
-                .aspectRatio(1f)
+                .aspectRatio(4f/3f)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -78,7 +78,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
             ),
             modifier = Modifier
                 .weight(1f)
-                .aspectRatio(1f)
+                .aspectRatio(4f/3f)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -109,7 +109,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
             ),
             modifier = Modifier
                 .weight(1f)
-                .aspectRatio(1f)
+                .aspectRatio(4f/3f)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
