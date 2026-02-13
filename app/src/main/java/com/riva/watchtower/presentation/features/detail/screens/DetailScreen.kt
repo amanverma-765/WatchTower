@@ -1,8 +1,9 @@
 package com.riva.watchtower.presentation.features.detail.screens
 
 import android.content.Intent
-import android.net.Uri
 import android.webkit.WebView
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -219,7 +220,7 @@ private fun DetailScreen(
                         val context = LocalContext.current
                         OutlinedButton(
                             onClick = {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(site.url))
+                                val intent = Intent(Intent.ACTION_VIEW, site.url.toUri())
                                 context.startActivity(intent)
                             },
                             shape = RoundedCornerShape(12.dp),
@@ -288,7 +289,7 @@ private fun DetailScreen(
                             factory = { ctx ->
                                 WebView(ctx).apply {
                                     settings.javaScriptEnabled = false
-                                    setBackgroundColor(android.graphics.Color.parseColor("#FAFAFA"))
+                                    setBackgroundColor("#FAFAFA".toColorInt())
                                     tag = htmlContent
                                     loadDataWithBaseURL(
                                         null,
