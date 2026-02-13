@@ -1,5 +1,6 @@
 package com.riva.watchtower.utils
 
+import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
@@ -26,6 +27,8 @@ data class HttpClientConfig(
 )
 
 internal object HttpClientFactory {
+    private val kermitLogger = Logger.withTag("HttpClient")
+
     internal fun create(config: HttpClientConfig = HttpClientConfig()): HttpClient {
         return HttpClient(OkHttp) {
             engine {
@@ -63,7 +66,7 @@ internal object HttpClientFactory {
                 install(Logging) {
                     logger = object : io.ktor.client.plugins.logging.Logger {
                         override fun log(message: String) {
-                            println("Ktor -> $message")
+                            kermitLogger.d { message }
                         }
                     }
                     level = config.logLevel

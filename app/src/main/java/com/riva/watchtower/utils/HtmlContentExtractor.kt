@@ -12,4 +12,7 @@ object HtmlContentExtractor {
         body.select(NON_CONTENT_TAGS.joinToString(",")).remove()
         return body.text()
     }
+
+    fun contentHash(rawHtml: String): String =
+        HashUtils.md5(extractVisibleText(rawHtml))
 }
