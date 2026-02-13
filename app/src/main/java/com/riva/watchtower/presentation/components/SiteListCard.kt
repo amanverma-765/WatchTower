@@ -1,21 +1,20 @@
 package com.riva.watchtower.presentation.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,15 +33,16 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.riva.watchtower.domain.enums.SiteStatus
 import com.riva.watchtower.domain.models.Site
-import com.riva.watchtower.presentation.theme.BlueBackground
-import com.riva.watchtower.presentation.theme.BlueValue
 import com.riva.watchtower.presentation.theme.GreenBackground
 import com.riva.watchtower.presentation.theme.GreenValue
 import com.riva.watchtower.presentation.theme.OrangeBackground
 import com.riva.watchtower.presentation.theme.OrangeValue
+import java.text.SimpleDateFormat
+import java.util.Date
+import org.koin.compose.koinInject
+import java.util.Locale
 
 @Composable
 fun SiteListCard(
@@ -52,72 +51,71 @@ fun SiteListCard(
     onClick: (siteId: String) -> Unit
 ) {
     val context = LocalContext.current
+    val imageLoader = koinInject<ImageLoader>()
+    val dateFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
 
     Card(
-        shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(.5.dp, MaterialTheme.colorScheme.outline),
+        onClick = { onClick(site.id) },
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick(site.id) }
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(14.dp)
         ) {
-            // Left side - Favicon + Info
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            // Favicon
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(site.favicon)
+                    .build(),
+                imageLoader = imageLoader,
+                contentDescription = "${site.name} favicon",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+
+            Spacer(Modifier.width(14.dp))
+
+            // Site Info
+            Column(
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier.weight(1f)
             ) {
-                // Favicon
-                AsyncImage(
-                    imageLoader = ImageLoader(context),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(site.favicon)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "${site.name} favicon",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                Text(
+                    text = site.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(Modifier.width(16.dp))
-
-                // Site Info
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = site.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(Modifier.size(4.dp))
-                    Text(
-                        text = site.url,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = site.url,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "Scanned ${dateFormat.format(Date(site.lastCheckedAt))}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
             }
 
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(10.dp))
 
-            // Right side - Status Indicator
+            // Status Indicator
             StatusBadge(status = site.lastStatus)
         }
     }
@@ -125,54 +123,34 @@ fun SiteListCard(
 
 @Composable
 private fun StatusBadge(status: SiteStatus) {
-    data class StatusStyle(
-        val icon: ImageVector,
-        val color: Color,
-        val backgroundColor: Color
-    )
-
-    val style = when (status) {
-        SiteStatus.PASSED -> StatusStyle(
-            icon = Icons.Default.CheckCircle,
-            color = GreenValue,
-            backgroundColor = GreenBackground
-        )
-        SiteStatus.CHANGED -> StatusStyle(
-            icon = Icons.Default.Warning,
-            color = OrangeValue,
-            backgroundColor = OrangeBackground
-        )
-        SiteStatus.ERROR -> StatusStyle(
-            icon = Icons.Default.Error,
-            color = Color(0xFFC62828),
-            backgroundColor = Color(0xFFF44336).copy(alpha = 0.1f)
-        )
-        SiteStatus.RESOLVED -> StatusStyle(
-            icon = Icons.Default.Info,
-            color = BlueValue,
-            backgroundColor = BlueBackground
+    val (icon, color, bgColor) = when (status) {
+        SiteStatus.PASSED -> Triple(Icons.Default.CheckCircle, GreenValue, GreenBackground)
+        SiteStatus.CHANGED -> Triple(Icons.Default.Warning, OrangeValue, OrangeBackground)
+        SiteStatus.ERROR -> Triple(
+            Icons.Default.Error,
+            Color(0xFFC62828),
+            Color(0xFFF44336).copy(alpha = 0.1f)
         )
     }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .clip(MaterialTheme.shapes.small)
-            .background(style.backgroundColor)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .background(bgColor)
+            .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
         Icon(
-            imageVector = style.icon,
+            imageVector = icon,
             contentDescription = status.text,
-            tint = style.color,
-            modifier = Modifier.size(16.dp)
+            tint = color,
+            modifier = Modifier.size(14.dp)
         )
-        Spacer(Modifier.width(6.dp))
+        Spacer(Modifier.width(4.dp))
         Text(
             text = status.text,
             style = MaterialTheme.typography.labelSmall,
-            color = style.color
+            color = color
         )
     }
 }

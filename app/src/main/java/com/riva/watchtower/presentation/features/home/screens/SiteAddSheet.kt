@@ -25,11 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -96,9 +92,7 @@ fun SiteAddSheet(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    IconButton(
-                        onClick = onDismiss
-                    ) {
+                    IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
@@ -153,7 +147,7 @@ fun SiteAddSheet(
 
                     Button(
                         onClick = { handleSave() },
-                        enabled = siteUrl.isNotBlank(),
+                        enabled = siteUrl.isNotBlank() && siteError == null,
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("Add Site")

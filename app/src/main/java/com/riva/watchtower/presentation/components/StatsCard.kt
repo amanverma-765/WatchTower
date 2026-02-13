@@ -32,7 +32,12 @@ import com.riva.watchtower.presentation.theme.OrangeValue
 
 
 @Composable
-fun StatsCard(modifier: Modifier = Modifier) {
+fun StatsCard(
+    modifier: Modifier = Modifier,
+    totalCount: Int,
+    changedCount: Int,
+    passedCount: Int
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -61,7 +66,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "2000",
+                    "$totalCount",
                     style = MaterialTheme.typography.headlineLarge,
                     color = BlueValue,
                     textAlign = TextAlign.Center
@@ -92,7 +97,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "20",
+                    "$changedCount",
                     style = MaterialTheme.typography.headlineLarge,
                     color = OrangeValue,
                     textAlign = TextAlign.Center
@@ -123,7 +128,7 @@ fun StatsCard(modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "20",
+                    "$passedCount",
                     style = MaterialTheme.typography.headlineLarge,
                     color = GreenValue,
                     textAlign = TextAlign.Center
