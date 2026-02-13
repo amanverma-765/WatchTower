@@ -285,6 +285,7 @@ private fun DetailScreen(
                             .padding(horizontal = 16.dp)
                     ) {
                         val htmlContent = uiState.changedHtml
+                        val baseUrl = site.url
                         AndroidView(
                             factory = { ctx ->
                                 WebView(ctx).apply {
@@ -292,7 +293,7 @@ private fun DetailScreen(
                                     setBackgroundColor("#FAFAFA".toColorInt())
                                     tag = htmlContent
                                     loadDataWithBaseURL(
-                                        null,
+                                        baseUrl,
                                         htmlContent,
                                         "text/html",
                                         "UTF-8",
@@ -305,7 +306,7 @@ private fun DetailScreen(
                                 if (current != htmlContent) {
                                     webView.tag = htmlContent
                                     webView.loadDataWithBaseURL(
-                                        null,
+                                        baseUrl,
                                         htmlContent,
                                         "text/html",
                                         "UTF-8",
