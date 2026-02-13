@@ -7,7 +7,8 @@ data class Site(
     val name: String,
     val url: String,
     val favicon: String,
-    val lastUpdated: Boolean,
+    val lastCheckedAt: Long,
+    val createdAt: Long,
     val lastStatus: SiteStatus,
     val contentHash: String
 )
