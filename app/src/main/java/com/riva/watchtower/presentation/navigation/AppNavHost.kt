@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.riva.watchtower.presentation.features.detail.screens.DetailScreenRoot
 import com.riva.watchtower.presentation.features.home.screens.HomeScreenRoot
+import com.riva.watchtower.presentation.features.settings.screens.SettingsScreenRoot
 
 
 @Composable
@@ -32,12 +33,17 @@ fun AppNavHost(
             HomeScreenRoot(
                 onSiteClicked = { siteId ->
                     controller.navigate(AppDestinations.Detail(siteId))
+                },
+                onSettingsClick = {
+                    controller.navigate(AppDestinations.Settings)
                 }
             )
         }
 
-        composable<AppDestinations.Alerts> {
-
+        composable<AppDestinations.Settings> {
+            SettingsScreenRoot(
+                onBackClick = { controller.popBackStack() }
+            )
         }
 
         composable<AppDestinations.Detail> {

@@ -6,14 +6,19 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.riva.watchtower.data.db.WatchTowerDatabase
 import com.riva.watchtower.data.external.SiteTrackingProvider
 import com.riva.watchtower.data.local.HtmlStorageProvider
+import com.riva.watchtower.data.local.SettingsDataStore
 import com.riva.watchtower.data.repository.SiteRepositoryImpl
 import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.presentation.features.detail.logic.DetailViewModel
 import com.riva.watchtower.presentation.features.home.logic.HomeViewModel
+import com.riva.watchtower.presentation.features.settings.logic.SettingsViewModel
 import com.riva.watchtower.utils.HttpClientFactory
+import com.riva.watchtower.worker.SiteCheckWorker
+import io.ktor.client.HttpClient
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -21,7 +26,7 @@ val appModule = module {
     single {
         ImageLoader.Builder(androidContext())
             .components {
-                add(KtorNetworkFetcherFactory(httpClient = get<io.ktor.client.HttpClient>()))
+                add(KtorNetworkFetcherFactory(httpClient = get<HttpClient>()))
             }
             .build()
     }
@@ -36,6 +41,12 @@ val appModule = module {
     }
     single { get<WatchTowerDatabase>().siteDao() }
     single<SiteRepository> { SiteRepositoryImpl(get(), get(), get()) }
-    viewModelOf(::HomeViewModel)
-    viewModelOf(::DetailViewModel)
+    single { SettingsDataStore(androidContext()) }
+    viewModel { HomeViewModel(get(), get(), androidContext()) }
+    viewModel { DetailViewModel(get(), get()) }
+    viewModel { SettingsViewModel(get(), androidContext()) }
+}
+
+val workerModule = module {
+    workerOf(::SiteCheckWorker)
 }

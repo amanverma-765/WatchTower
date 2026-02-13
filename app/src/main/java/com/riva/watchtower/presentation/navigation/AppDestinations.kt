@@ -11,5 +11,5 @@ sealed class AppDestinations {
     data class Detail(val siteId: String) : AppDestinations()
 
     @Serializable
-    data object Alerts : AppDestinations()
+    data object Settings : AppDestinations()
 }

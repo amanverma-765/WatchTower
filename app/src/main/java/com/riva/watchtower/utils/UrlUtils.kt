@@ -16,4 +16,7 @@ object UrlUtils {
 
     fun faviconUrl(domain: String): String =
         "$FAVICON_BASE_URL?domain=$domain&sz=$FAVICON_SIZE"
+
+    fun friendlyName(domain: String): String =
+        domain.substringBeforeLast(".").replaceFirstChar { it.uppercase() }
 }

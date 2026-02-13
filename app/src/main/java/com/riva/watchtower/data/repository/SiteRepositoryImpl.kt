@@ -11,10 +11,6 @@ import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.utils.HtmlContentExtractor
 import com.riva.watchtower.utils.UrlUtils
 import com.riva.watchtower.domain.models.Site
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -58,16 +54,8 @@ class SiteRepositoryImpl(
         site
     }.onFailure { logger.e(it) { "Failed to add site: $url" } }
 
-    override suspend fun checkAllSites(): Result<List<Site>> = runCatching {
-        val sites = siteDao.getAll().map { it.toDomain() }
-        coroutineScope {
-            sites.map { site ->
-                async(Dispatchers.IO) {
-                    checkSite(site)
-                }
-            }.awaitAll()
-        }
-    }.onFailure { logger.e(it) { "Failed to check all sites" } }
+    override suspend fun getAllSites(): List<Site> =
+        siteDao.getAll().map { it.toDomain() }
 
     override suspend fun checkSite(site: Site): Site {
         return try {
