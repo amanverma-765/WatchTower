@@ -8,9 +8,6 @@ sealed class AppDestinations {
     data object Home : AppDestinations()
 
     @Serializable
-    data object SiteAdd : AppDestinations()
-
-    @Serializable
     data class Detail(val siteId: String) : AppDestinations()
 
     @Serializable

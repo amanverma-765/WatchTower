@@ -22,15 +22,15 @@ fun AppNavHost(
     NavHost(
         navController = controller,
         startDestination = startDestination,
-        enterTransition = { slideInHorizontally(tween(500)) { it } },
-        exitTransition = { slideOutHorizontally(tween(500)) { -it } },
-        popEnterTransition = { slideInHorizontally(tween(500)) { -it } },
-        popExitTransition = { slideOutHorizontally(tween(500)) { it } },
+        enterTransition = { slideInHorizontally(tween(300)) { it } },
+        exitTransition = { slideOutHorizontally(tween(300)) { -it } },
+        popEnterTransition = { slideInHorizontally(tween(300)) { -it } },
+        popExitTransition = { slideOutHorizontally(tween(300)) { it } },
         modifier = modifier
     ) {
         composable<AppDestinations.Home> {
             HomeScreenRoot(
-                onSiteCLicked = { siteId ->
+                onSiteClicked = { siteId ->
                     controller.navigate(AppDestinations.Detail(siteId))
                 }
             )

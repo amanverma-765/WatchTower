@@ -44,14 +44,14 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreenRoot(
     modifier: Modifier = Modifier,
-    onSiteCLicked: (siteId: String) -> Unit
+    onSiteClicked: (siteId: String) -> Unit
 ) {
     val viewmodel = koinViewModel<HomeViewModel>()
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         modifier = modifier,
-        onSiteCLicked = onSiteCLicked,
+        onSiteClicked = onSiteClicked,
         uiState = uiState,
         uiEvent = viewmodel::onEvent
     )
@@ -61,7 +61,7 @@ fun HomeScreenRoot(
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
-    onSiteCLicked: (siteId: String) -> Unit,
+    onSiteClicked: (siteId: String) -> Unit,
     uiState: HomeUiState,
     uiEvent: (HomeUiEvent) -> Unit
 ) {
@@ -150,7 +150,7 @@ private fun HomeScreen(
                 items(filteredSites, key = { it.id }) { site ->
                     SiteListCard(
                         site = site,
-                        onClick = onSiteCLicked
+                        onClick = onSiteClicked
                     )
                 }
             }
