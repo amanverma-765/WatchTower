@@ -12,10 +12,12 @@ class SiteTrackingProvider(private val httpClient: HttpClient) {
     }
 
     suspend fun fetchSiteHtml(url: String): Result<String> {
-        val response = httpClient.get(urlString = url)
-        if (!response.status.isSuccess()) {
-            logger.e { "Failed to fetch: $url" }
-        }
-        return Result.success(response.bodyAsText())
+        return runCatching {
+            val response = httpClient.get(urlString = url)
+            if (!response.status.isSuccess()) {
+                error("Server returned ${response.status.value} for $url")
+            }
+            response.bodyAsText()
+        }.onFailure { logger.e(it) { "Failed to fetch: $url" } }
     }
 }
