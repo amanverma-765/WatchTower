@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -198,6 +199,36 @@ private fun HomeScreen(
                             selected = selected,
                             onClick = { selected = it }
                         )
+                    }
+                    if (filteredSites.isEmpty() && !uiState.isLoading) {
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillParentMaxHeight(0.6f)
+                                    .fillMaxWidth()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Language,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.outlineVariant,
+                                    modifier = Modifier.size(72.dp)
+                                )
+                                Text(
+                                    text = "No sites yet",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(top = 16.dp)
+                                )
+                                Text(
+                                    text = "Tap + to add a website to monitor",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        }
                     }
                     items(filteredSites, key = { it.id }) { site ->
                         SiteListCard(

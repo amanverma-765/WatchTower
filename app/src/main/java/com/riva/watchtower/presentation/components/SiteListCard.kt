@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.riva.watchtower.domain.enums.SiteStatus
 import com.riva.watchtower.domain.models.Site
 import com.riva.watchtower.utils.DateFormatter
+import com.riva.watchtower.utils.UrlUtils
 
 @Composable
 fun SiteListCard(
@@ -52,6 +53,7 @@ fun SiteListCard(
             // Favicon
             RemoteImage(
                 url = site.favicon,
+                fallbackUrl = UrlUtils.faviconUrlFallback(UrlUtils.extractDomain(site.url)),
                 contentDescription = "${site.name} favicon",
                 modifier = Modifier
                     .size(44.dp)

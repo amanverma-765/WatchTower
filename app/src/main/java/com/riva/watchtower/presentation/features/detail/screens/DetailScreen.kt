@@ -74,6 +74,7 @@ import com.riva.watchtower.presentation.theme.ErrorRedValue
 import com.riva.watchtower.presentation.theme.GreenValue
 import com.riva.watchtower.presentation.theme.OrangeValue
 import com.riva.watchtower.utils.DateFormatter
+import com.riva.watchtower.utils.UrlUtils
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -485,6 +486,7 @@ private fun SiteInfoCard(
             ) {
                 RemoteImage(
                     url = favicon,
+                    fallbackUrl = UrlUtils.faviconUrlFallback(UrlUtils.extractDomain(url)),
                     contentDescription = "$name favicon",
                     modifier = Modifier
                         .size(52.dp)
