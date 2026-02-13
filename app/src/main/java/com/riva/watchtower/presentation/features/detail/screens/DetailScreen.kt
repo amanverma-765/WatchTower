@@ -1,6 +1,7 @@
 package com.riva.watchtower.presentation.features.detail.screens
 
 import android.content.Intent
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
@@ -37,6 +38,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +50,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -286,36 +289,52 @@ private fun DetailScreen(
                     ) {
                         val htmlContent = uiState.changedHtml
                         val baseUrl = site.url
-                        AndroidView(
-                            factory = { ctx ->
-                                WebView(ctx).apply {
-                                    settings.javaScriptEnabled = false
-                                    setBackgroundColor("#FAFAFA".toColorInt())
-                                    tag = htmlContent
-                                    loadDataWithBaseURL(
-                                        baseUrl,
-                                        htmlContent,
-                                        "text/html",
-                                        "UTF-8",
-                                        null
-                                    )
-                                }
-                            },
-                            update = { webView ->
-                                val current = webView.tag as? String
-                                if (current != htmlContent) {
-                                    webView.tag = htmlContent
-                                    webView.loadDataWithBaseURL(
-                                        baseUrl,
-                                        htmlContent,
-                                        "text/html",
-                                        "UTF-8",
-                                        null
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        var loadProgress by remember { mutableIntStateOf(0) }
+
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            AndroidView(
+                                factory = { ctx ->
+                                    WebView(ctx).apply {
+                                        settings.javaScriptEnabled = false
+                                        setBackgroundColor("#FAFAFA".toColorInt())
+                                        webChromeClient = object : WebChromeClient() {
+                                            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                                                loadProgress = newProgress
+                                            }
+                                        }
+                                        tag = htmlContent
+                                        loadDataWithBaseURL(
+                                            baseUrl,
+                                            htmlContent,
+                                            "text/html",
+                                            "UTF-8",
+                                            null
+                                        )
+                                    }
+                                },
+                                update = { webView ->
+                                    val current = webView.tag as? String
+                                    if (current != htmlContent) {
+                                        webView.tag = htmlContent
+                                        loadProgress = 0
+                                        webView.loadDataWithBaseURL(
+                                            baseUrl,
+                                            htmlContent,
+                                            "text/html",
+                                            "UTF-8",
+                                            null
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            )
+
+                            if (loadProgress < 100) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
                     }
                 } else {
                     // No-change placeholder
