@@ -54,29 +54,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
 import com.riva.watchtower.domain.enums.SiteStatus
+import com.riva.watchtower.presentation.components.RemoteImage
+import com.riva.watchtower.presentation.components.StatusBadge
 import com.riva.watchtower.presentation.features.detail.logic.DetailUiEvent
 import com.riva.watchtower.presentation.features.detail.logic.DetailUiState
 import com.riva.watchtower.presentation.features.detail.logic.DetailViewModel
-import com.riva.watchtower.presentation.theme.GreenBackground
+import com.riva.watchtower.presentation.theme.ErrorRedValue
 import com.riva.watchtower.presentation.theme.GreenValue
-import com.riva.watchtower.presentation.theme.OrangeBackground
 import com.riva.watchtower.presentation.theme.OrangeValue
+import com.riva.watchtower.utils.DateFormatter
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun DetailScreenRoot(
@@ -357,7 +351,7 @@ private fun NoChangePlaceholder(
         )
         SiteStatus.ERROR -> PlaceholderData(
             icon = Icons.Default.Error,
-            tint = Color(0xFFC62828),
+            tint = ErrorRedValue,
             title = "Check Failed",
             subtitle = "Couldn't reach this website.\nTry rechecking or verify the URL is correct."
         )
@@ -423,10 +417,6 @@ private fun SiteInfoCard(
     status: SiteStatus,
     lastCheckedAt: Long
 ) {
-    val context = LocalContext.current
-    val imageLoader = koinInject<ImageLoader>()
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.getDefault())
-
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -441,13 +431,9 @@ private fun SiteInfoCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(favicon)
-                        .build(),
-                    imageLoader = imageLoader,
+                RemoteImage(
+                    url = favicon,
                     contentDescription = "$name favicon",
-                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(52.dp)
                         .clip(CircleShape)
@@ -496,7 +482,7 @@ private fun SiteInfoCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Last scanned ${dateFormat.format(Date(lastCheckedAt))}",
+                    text = "Last scanned ${DateFormatter.formatLong(lastCheckedAt)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -505,36 +491,3 @@ private fun SiteInfoCard(
     }
 }
 
-@Composable
-private fun StatusBadge(status: SiteStatus) {
-    val (icon, color, bgColor) = when (status) {
-        SiteStatus.PASSED -> Triple(Icons.Default.CheckCircle, GreenValue, GreenBackground)
-        SiteStatus.CHANGED -> Triple(Icons.Default.Warning, OrangeValue, OrangeBackground)
-        SiteStatus.ERROR -> Triple(
-            Icons.Default.Error,
-            Color(0xFFC62828),
-            Color(0xFFF44336).copy(alpha = 0.1f)
-        )
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.small)
-            .background(bgColor)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = status.text,
-            tint = color,
-            modifier = Modifier.size(14.dp)
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text = status.text,
-            style = MaterialTheme.typography.labelSmall,
-            color = color
-        )
-    }
-}
