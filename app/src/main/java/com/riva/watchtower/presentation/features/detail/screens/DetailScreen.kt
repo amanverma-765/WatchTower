@@ -289,6 +289,7 @@ private fun DetailScreen(
                                 WebView(ctx).apply {
                                     settings.javaScriptEnabled = false
                                     setBackgroundColor(android.graphics.Color.parseColor("#FAFAFA"))
+                                    tag = htmlContent
                                     loadDataWithBaseURL(
                                         null,
                                         htmlContent,
@@ -299,13 +300,17 @@ private fun DetailScreen(
                                 }
                             },
                             update = { webView ->
-                                webView.loadDataWithBaseURL(
-                                    null,
-                                    htmlContent,
-                                    "text/html",
-                                    "UTF-8",
-                                    null
-                                )
+                                val current = webView.tag as? String
+                                if (current != htmlContent) {
+                                    webView.tag = htmlContent
+                                    webView.loadDataWithBaseURL(
+                                        null,
+                                        htmlContent,
+                                        "text/html",
+                                        "UTF-8",
+                                        null
+                                    )
+                                }
                             },
                             modifier = Modifier.fillMaxSize()
                         )
