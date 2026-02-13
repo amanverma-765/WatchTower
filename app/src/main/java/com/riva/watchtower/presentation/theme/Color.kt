@@ -30,6 +30,4 @@ val GreenValue = Color(0xFF2E7D32)
 
 // Red - Error Status
 val ErrorRedBackground = Color(0xFFF44336).copy(alpha = 0.1f)
-val ErrorRedBorder = Color(0xFFF44336).copy(alpha = 0.3f)
-val ErrorRedLabel = Color(0xFFC62828)
 val ErrorRedValue = Color(0xFFC62828)
