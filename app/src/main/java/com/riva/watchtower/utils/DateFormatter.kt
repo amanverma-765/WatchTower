@@ -6,11 +6,11 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object DateFormatter {
-    private val shortFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
-    private val longFormat = SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.getDefault())
+    fun formatShort(timestamp: Long): String =
+        SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(timestamp))
 
-    fun formatShort(timestamp: Long): String = shortFormat.format(Date(timestamp))
-    fun formatLong(timestamp: Long): String = longFormat.format(Date(timestamp))
+    fun formatLong(timestamp: Long): String =
+        SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.getDefault()).format(Date(timestamp))
 
     fun formatCountdown(targetMillis: Long): String {
         val diff = targetMillis - System.currentTimeMillis()
