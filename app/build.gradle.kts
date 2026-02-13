@@ -91,4 +91,7 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.java.diff.utils)
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.koin.workmanager)
+    implementation(libs.datastore.preferences)
 }
