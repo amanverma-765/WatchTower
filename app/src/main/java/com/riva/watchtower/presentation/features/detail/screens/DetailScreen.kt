@@ -110,6 +110,32 @@ private fun DetailScreen(
     onBackClick: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showResolveDialog by remember { mutableStateOf(false) }
+
+    if (showResolveDialog) {
+        AlertDialog(
+            onDismissRequest = { showResolveDialog = false },
+            title = { Text("Resolve Changes") },
+            text = {
+                Text("Accept the current content as the new baseline? This will clear the detected changes.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResolveDialog = false
+                        onEvent(DetailUiEvent.MarkResolved)
+                    }
+                ) {
+                    Text("Resolve")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResolveDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -242,7 +268,7 @@ private fun DetailScreen(
 
                         if (site.lastStatus == SiteStatus.CHANGED) {
                             Button(
-                                onClick = { onEvent(DetailUiEvent.MarkResolved) },
+                                onClick = { showResolveDialog = true },
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier
                                     .weight(1f)
