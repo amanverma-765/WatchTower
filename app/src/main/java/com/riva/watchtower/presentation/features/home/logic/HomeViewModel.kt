@@ -3,7 +3,7 @@ package com.riva.watchtower.presentation.features.home.logic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.riva.watchtower.data.repository.SiteRepository
+import com.riva.watchtower.domain.repository.SiteRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

@@ -6,7 +6,8 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.riva.watchtower.data.db.WatchTowerDatabase
 import com.riva.watchtower.data.external.SiteTrackingProvider
 import com.riva.watchtower.data.local.HtmlStorageProvider
-import com.riva.watchtower.data.repository.SiteRepository
+import com.riva.watchtower.data.repository.SiteRepositoryImpl
+import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.presentation.features.detail.logic.DetailViewModel
 import com.riva.watchtower.presentation.features.home.logic.HomeViewModel
 import com.riva.watchtower.utils.HttpClientFactory
@@ -34,7 +35,7 @@ val appModule = module {
         ).build()
     }
     single { get<WatchTowerDatabase>().siteDao() }
-    singleOf(::SiteRepository)
+    single<SiteRepository> { SiteRepositoryImpl(get(), get(), get()) }
     viewModelOf(::HomeViewModel)
     viewModelOf(::DetailViewModel)
 }

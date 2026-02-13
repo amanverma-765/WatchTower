@@ -7,7 +7,9 @@ import com.riva.watchtower.data.db.toEntity
 import com.riva.watchtower.data.external.SiteTrackingProvider
 import com.riva.watchtower.data.local.HtmlStorageProvider
 import com.riva.watchtower.domain.enums.SiteStatus
+import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.utils.HtmlContentExtractor
+import com.riva.watchtower.utils.UrlUtils
 import com.riva.watchtower.domain.models.Site
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -15,27 +17,26 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.security.MessageDigest
 import java.util.UUID
 
-class SiteRepository(
+class SiteRepositoryImpl(
     private val siteDao: SiteDao,
     private val siteTracker: SiteTrackingProvider,
     private val htmlStorage: HtmlStorageProvider
-) {
+) : SiteRepository {
 
     companion object {
         private val logger = Logger.withTag("SiteRepository")
     }
 
-    fun observeAllSites(): Flow<List<Site>> =
+    override fun observeAllSites(): Flow<List<Site>> =
         siteDao.observeAll().map { entities -> entities.map { it.toDomain() } }
 
-    suspend fun addSite(url: String): Result<Site> = runCatching {
+    override suspend fun addSite(url: String): Result<Site> = runCatching {
         val html = siteTracker.fetchSiteHtml(url).getOrThrow()
-        val domain = extractDomain(url)
-        val favicon = "https://www.google.com/s2/favicons?domain=$domain&sz=64"
-        val hash = md5(HtmlContentExtractor.extractVisibleText(html))
+        val domain = UrlUtils.extractDomain(url)
+        val favicon = UrlUtils.faviconUrl(domain)
+        val hash = HtmlContentExtractor.contentHash(html)
         val now = System.currentTimeMillis()
         val siteId = UUID.randomUUID().toString()
 
@@ -57,7 +58,7 @@ class SiteRepository(
         site
     }.onFailure { logger.e(it) { "Failed to add site: $url" } }
 
-    suspend fun checkAllSites(): Result<List<Site>> = runCatching {
+    override suspend fun checkAllSites(): Result<List<Site>> = runCatching {
         val sites = siteDao.getAll().map { it.toDomain() }
         coroutineScope {
             sites.map { site ->
@@ -68,10 +69,10 @@ class SiteRepository(
         }
     }.onFailure { logger.e(it) { "Failed to check all sites" } }
 
-    suspend fun checkSite(site: Site): Site {
+    override suspend fun checkSite(site: Site): Site {
         return try {
             val html = siteTracker.fetchSiteHtml(site.url).getOrThrow()
-            val newHash = md5(HtmlContentExtractor.extractVisibleText(html))
+            val newHash = HtmlContentExtractor.contentHash(html)
             val now = System.currentTimeMillis()
 
             // Compare against the baseline hash (contentHash), NOT the latest fetch
@@ -104,26 +105,26 @@ class SiteRepository(
         }
     }
 
-    suspend fun getSiteById(id: String): Site? =
+    override suspend fun getSiteById(id: String): Site? =
         siteDao.getById(id)?.toDomain()
 
-    suspend fun getBaselineHtml(siteId: String): Result<String> =
+    override suspend fun getBaselineHtml(siteId: String): Result<String> =
         htmlStorage.readBaselineHtml(siteId)
 
-    suspend fun getLatestHtml(siteId: String): Result<String> =
+    override suspend fun getLatestHtml(siteId: String): Result<String> =
         htmlStorage.readLatestHtml(siteId)
 
-    suspend fun deleteSite(id: String) {
+    override suspend fun deleteSite(id: String) {
         siteDao.deleteById(id)
         htmlStorage.deleteAll(id)
         logger.i { "Deleted site: $id" }
     }
 
-    suspend fun resolveSite(id: String) {
+    override suspend fun resolveSite(id: String) {
         val entity = siteDao.getById(id) ?: return
         // Read the latest HTML to compute its hash as the new baseline hash
         val latestHtml = htmlStorage.readLatestHtml(id).getOrNull()
-        val newHash = latestHtml?.let { md5(HtmlContentExtractor.extractVisibleText(it)) } ?: entity.contentHash
+        val newHash = latestHtml?.let { HtmlContentExtractor.contentHash(it) } ?: entity.contentHash
         // Promote latest → baseline
         htmlStorage.promoteLatestToBaseline(id)
         // Update status to PASSED and contentHash to the new baseline
@@ -134,12 +135,4 @@ class SiteRepository(
         logger.i { "Resolved site: $id — new baseline hash: $newHash" }
     }
 
-    private fun extractDomain(url: String): String =
-        url.removePrefix("https://").removePrefix("http://").removePrefix("www.").split("/").first()
-
-    private fun md5(input: String): String {
-        val digest = MessageDigest.getInstance("MD5")
-        val bytes = digest.digest(input.toByteArray())
-        return bytes.joinToString("") { "%02x".format(it) }
-    }
 }

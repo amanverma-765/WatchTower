@@ -8,7 +8,7 @@ import co.touchlab.kermit.Logger
 import com.fleeksoft.ksoup.Ksoup
 import com.github.difflib.DiffUtils
 import com.github.difflib.patch.DeltaType
-import com.riva.watchtower.data.repository.SiteRepository
+import com.riva.watchtower.domain.repository.SiteRepository
 import com.riva.watchtower.domain.enums.SiteStatus
 import com.riva.watchtower.presentation.navigation.AppDestinations
 import kotlinx.coroutines.flow.MutableStateFlow

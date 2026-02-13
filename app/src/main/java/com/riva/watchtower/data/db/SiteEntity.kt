@@ -24,7 +24,7 @@ fun SiteEntity.toDomain(): Site = Site(
     favicon = favicon,
     lastCheckedAt = lastCheckedAt,
     createdAt = createdAt,
-    lastStatus = SiteStatus.valueOf(lastStatus),
+    lastStatus = try { SiteStatus.valueOf(lastStatus) } catch (_: IllegalArgumentException) { SiteStatus.ERROR },
     contentHash = contentHash
 )
 
